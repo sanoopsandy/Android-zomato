@@ -2,14 +2,11 @@ package com.example.root.zomato;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,11 +17,13 @@ import java.util.List;
  */
 public class CityAdapter extends ArrayAdapter<City> {
 
+    public Context context;
     public final static String MESSAGE = "com.example.root.test3.MESSAGE";
 
     private List<City> list = new ArrayList();
     public CityAdapter(Context context, int resource) {
         super(context, resource);
+        this.context = context;
     }
 
     public void add(City object) {
@@ -35,7 +34,6 @@ public class CityAdapter extends ArrayAdapter<City> {
     static class Holder{
         TextView NAME;
     }
-
 
 
     @Override
@@ -52,17 +50,20 @@ public class CityAdapter extends ArrayAdapter<City> {
         else {
             holder = (Holder) row.getTag();
         }
-        City city = (City) getItem(position);
+        final City city = (City) getItem(position);
         holder.NAME.setText(city.getName());
-
         final View.OnClickListener makeListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(this, SubZoneList.class);
-                intent.putExtra(MESSAGE, v.getClass());
-
+                Intent intent = new Intent(context, TabListing.class);
+                intent.putExtra(MESSAGE, city.getId());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         };
+
+        row.setOnClickListener(makeListener);
+
         return row;
     }
 

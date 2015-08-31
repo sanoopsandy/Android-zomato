@@ -1,18 +1,17 @@
 package com.example.root.zomato;
 
-
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,78 +20,58 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Home extends AppCompatActivity {
+public class CuisineList extends AppCompatActivity {
 
-    TextView textView;
-    ListView listView;
-    private ProgressBar progressBar;
     JSONArray json;
-    public final static String MESSAGE = "com.example.root.test3.MESSAGE";
+    ListView listView;
     public final static String URL = "https://api.zomato.com/v1/";
     public final static String apiKey = "7749b19667964b87a3efc739e254ada2";
-    public final static String localList = "subzones.json?city_id="; // city id
-    public final static String cuisineList = "cuisines.json?city_id=1"; //city id
-    public final static String restaurantList = "search.json?subzone_id="; // local id
-    public final static String restaurantDetail = "restaurant.json/"; // restaurant id
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        new read().execute("1", "cities", "city", "name", "id");
+        setContentView(R.layout.activity_cuisine_list);
+        Intent intent = getIntent();
+        String city_id = intent.getStringExtra(CityAdapter.MESSAGE);
+        new cuisine().execute("1", "cuisines", "cuisine", "cuisine_id", "cuisine_name", city_id);
     }
 
-
-    private class read extends AsyncTask<String, Void, List<City>> {
-
+    private class cuisine extends AsyncTask<String, Void, List<Cuisine>> {
         @Override
-        protected void onPreExecute() {
-            progressBar = (ProgressBar) findViewById(R.id.progressBar1);
-            progressBar.setVisibility(View.VISIBLE);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected List<City> doInBackground(String... params) {
+        protected List<Cuisine> doInBackground(String... params) {
             try {
-                JSONArray cities = cityList("cities.json/1");
-                List<City> arrayOfCity = new ArrayList<City>();
-                for(int i = 0; i < cities.length(); i++){
-                    JSONObject city = cities.getJSONObject(i);
-                    JSONObject city_detail = city.getJSONObject(params[2]);
-                    arrayOfCity.add(new City(city_detail.getString(params[3]), city_detail.getString(params[4])));
-
+                JSONArray cuisines = cuisineList("cuisines.json?city_id=" + params[5]);
+                List<Cuisine> arrayOfCuisine = new ArrayList<Cuisine>();
+                for (int i = 0; i < cuisines.length(); i++){
+                    JSONObject cuisine = cuisines.getJSONObject(i);
+                    JSONObject cuisineDetail = cuisine.getJSONObject(params[2]);
+                    arrayOfCuisine.add(new Cuisine(cuisineDetail.getString(params[4]), cuisineDetail.getString(params[3])));
                 }
-                return arrayOfCity;
-
+                return arrayOfCuisine;
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             return null;
         }
 
         @Override
-        protected void onPostExecute(List<City> s) {
+        protected void onPostExecute(List<Cuisine> s) {
 //            super.onPostExecute(s);
-            listView = (ListView)findViewById(R.id.city);
-            CityAdapter adapter = new CityAdapter(getApplicationContext(), R.layout.row_layout);
+            listView = (ListView)findViewById(R.id.city_list);
+            CuisineAdapter adapter = new CuisineAdapter(getApplicationContext(), R.layout.row_layout);
             for(int i =0; i < s.size(); i++){
                 adapter.add(s.get(i));
             }
-            progressBar.setVisibility(View.INVISIBLE);
             listView.setAdapter(adapter);
+//            setListAdapter(new ArrayAdapter<String>(Locality.this, android.R.layout.simple_list_item_1, s));
         }
     }
 
-    public JSONArray cityList(String query) throws IOException, JSONException{
+    public JSONArray cuisineList(String query) throws IOException, JSONException {
         OkHttpClient client = new OkHttpClient();
         StringBuilder url = new StringBuilder(URL);
         url.append(query);
@@ -102,17 +81,15 @@ public class Home extends AppCompatActivity {
                 .build();
         Response response = client.newCall(request).execute();
         String result = response.body().string();
-        JSONObject citiesObject = new JSONObject(result);
-        return citiesObject.getJSONArray("cities");
+        JSONObject localityObject = new JSONObject(result);
+        return localityObject.getJSONArray("cuisines");
+
     }
 
-
-
-
-        @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        getMenuInflater().inflate(R.menu.menu_cuisine_list, menu);
         return true;
     }
 

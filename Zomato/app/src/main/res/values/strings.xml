@@ -4,4 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_sub_zone_list">SubZoneList</string>
+    <string name="title_activity_cuisine_list">CuisineList</string>
+    <string name="title_activity_zone_list">ZoneList</string>
+    <string name="title_activity_tab_listing">TabListing</string>
 </resources>

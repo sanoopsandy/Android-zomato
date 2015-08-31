@@ -1,6 +1,5 @@
 package com.example.root.zomato;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,23 +14,24 @@ import java.util.List;
 /**
  * Created by root on 31/8/15.
  */
-public class SubZoneAdapter extends ArrayAdapter<SubZone> {
+public class CuisineAdapter extends ArrayAdapter<Cuisine> {
+
     public Context context;
     public final static String MESSAGE = "com.example.root.test3.MESSAGE";
 
-    private List<SubZone> list = new ArrayList();
-    public SubZoneAdapter(Context context, int resource) {
+    private List<Cuisine> list = new ArrayList();
+
+    public CuisineAdapter(Context context, int resource) {
         super(context, resource);
-        this.context = context;
     }
 
-    public void add(SubZone object) {
+    public void add(Cuisine object) {
         list.add(object);
         super.add(object);
     }
 
     static class Holder{
-        TextView SubZoneName;
+        TextView CuisineName;
     }
 
     @Override
@@ -42,19 +42,19 @@ public class SubZoneAdapter extends ArrayAdapter<SubZone> {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(R.layout.row_layout, parent, false);
             holder = new Holder();
-            holder.SubZoneName = (TextView) row.findViewById(R.id.Name);
+            holder.CuisineName = (TextView) row.findViewById(R.id.Name);
             row.setTag(holder);
         }
         else {
             holder = (Holder) row.getTag();
         }
-        final SubZone subZone = (SubZone) getItem(position);
-        holder.SubZoneName.setText(subZone.getName());
+        final Cuisine cuisine = (Cuisine) getItem(position);
+        holder.CuisineName.setText(cuisine.getName());
         final View.OnClickListener makeListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, SubZoneList.class);
-                intent.putExtra(MESSAGE, subZone.getSubzone_id());
+                intent.putExtra(MESSAGE, cuisine.getId());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
