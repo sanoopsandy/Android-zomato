@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -24,6 +26,7 @@ public class CuisineList extends AppCompatActivity {
 
     JSONArray json;
     ListView listView;
+    private ProgressBar progressBar;
     public final static String URL = "https://api.zomato.com/v1/";
     public final static String apiKey = "7749b19667964b87a3efc739e254ada2";
 
@@ -33,11 +36,24 @@ public class CuisineList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cuisine_list);
         Intent intent = getIntent();
-        String city_id = intent.getStringExtra(CityAdapter.MESSAGE);
+        String city_id = intent.getStringExtra(TabListing.MESSAGE);
         new cuisine().execute("1", "cuisines", "cuisine", "cuisine_id", "cuisine_name", city_id);
     }
 
     private class cuisine extends AsyncTask<String, Void, List<Cuisine>> {
+
+        @Override
+        protected void onPreExecute() {
+            progressBar = (ProgressBar) findViewById(R.id.progressBar1);
+            progressBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
         @Override
         protected List<Cuisine> doInBackground(String... params) {
             try {
@@ -46,7 +62,7 @@ public class CuisineList extends AppCompatActivity {
                 for (int i = 0; i < cuisines.length(); i++){
                     JSONObject cuisine = cuisines.getJSONObject(i);
                     JSONObject cuisineDetail = cuisine.getJSONObject(params[2]);
-                    arrayOfCuisine.add(new Cuisine(cuisineDetail.getString(params[4]), cuisineDetail.getString(params[3])));
+                    arrayOfCuisine.add(new Cuisine(cuisineDetail.getString(params[4]), cuisineDetail.getString(params[3]), params[5]));
                 }
                 return arrayOfCuisine;
             } catch (IOException e) {
@@ -61,11 +77,12 @@ public class CuisineList extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Cuisine> s) {
 //            super.onPostExecute(s);
-            listView = (ListView)findViewById(R.id.city_list);
+            listView = (ListView)findViewById(R.id.cuisine);
             CuisineAdapter adapter = new CuisineAdapter(getApplicationContext(), R.layout.row_layout);
             for(int i =0; i < s.size(); i++){
                 adapter.add(s.get(i));
             }
+            progressBar.setVisibility(View.INVISIBLE);
             listView.setAdapter(adapter);
 //            setListAdapter(new ArrayAdapter<String>(Locality.this, android.R.layout.simple_list_item_1, s));
         }
@@ -86,25 +103,25 @@ public class CuisineList extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_cuisine_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_cuisine_list, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 }

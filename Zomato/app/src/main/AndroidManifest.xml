@@ -31,6 +31,14 @@
             android:name=".TabListing"
             android:label="@string/title_activity_tab_listing" >
         </activity>
+        <activity
+            android:name=".RestaurantInSubZone"
+            android:label="@string/title_activity_restaurant_in_sub_zone" >
+        </activity>
+        <activity
+            android:name=".RestaurantDetail"
+            android:label="@string/title_activity_restaurant_detail" >
+        </activity>
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package com.example.root.zomato;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,23 +14,23 @@ import java.util.List;
 /**
  * Created by root on 31/8/15.
  */
-public class SubZoneAdapter extends ArrayAdapter<SubZone> {
+public class RestaurantAdapter extends ArrayAdapter<RestaurantList> {
     public Context context;
     public final static String MESSAGE = "com.example.root.test3.MESSAGE";
 
-    private List<SubZone> list = new ArrayList();
-    public SubZoneAdapter(Context context, int resource) {
+    private List<RestaurantList> list = new ArrayList();
+
+    public RestaurantAdapter(Context context, int resource) {
         super(context, resource);
-        this.context = context;
     }
 
-    public void add(SubZone object) {
+    public void add(RestaurantList object) {
         list.add(object);
         super.add(object);
     }
 
     static class Holder{
-        TextView SubZoneName;
+        TextView RestaurantName;
     }
 
     @Override
@@ -42,26 +41,27 @@ public class SubZoneAdapter extends ArrayAdapter<SubZone> {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
             row = inflater.inflate(R.layout.row_layout, parent, false);
             holder = new Holder();
-            holder.SubZoneName = (TextView) row.findViewById(R.id.Name);
+            holder.RestaurantName = (TextView) row.findViewById(R.id.Name);
             row.setTag(holder);
         }
         else {
             holder = (Holder) row.getTag();
         }
-        final SubZone subZone = (SubZone) getItem(position);
-        holder.SubZoneName.setText(subZone.getName());
-        final View.OnClickListener makeListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, RestaurantInSubZone.class);
-                intent.putExtra(MESSAGE, subZone.getSubzone_id());
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        };
-
-        row.setOnClickListener(makeListener);
+        final RestaurantList restaurant = (RestaurantList) getItem(position);
+        holder.RestaurantName.setText(restaurant.getName());
+//        final View.OnClickListener makeListener = new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(context, RestaurantDetail.class);
+//                intent.putExtra(MESSAGE, restaurant.getId());
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                context.startActivity(intent);
+//            }
+//        };
+//
+//        row.setOnClickListener(makeListener);
 
         return row;
     }
+
 }

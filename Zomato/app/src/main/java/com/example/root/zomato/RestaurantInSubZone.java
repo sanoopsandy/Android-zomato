@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubZoneList extends AppCompatActivity {
+public class RestaurantInSubZone extends AppCompatActivity {
 
     JSONArray json;
     ListView listView;
@@ -33,13 +33,13 @@ public class SubZoneList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sub_zone_list);
+        setContentView(R.layout.activity_restaurant_in_sub_zone);
         Intent intent = getIntent();
-        String city_id = intent.getStringExtra(TabListing.MESSAGE);
-        new locality().execute("1", "subzones", "subzone", "name", "zone_id", "subzone_id", "city_id", city_id);
+        String subzone_id = intent.getStringExtra(SubZoneAdapter.MESSAGE);
+        new restaurant().execute("1", "results", "result", "id", "name", subzone_id);
     }
 
-    private class locality extends AsyncTask<String, Void, List<SubZone>> {
+    private class restaurant extends AsyncTask<String, Void, List<RestaurantList>> {
 
         @Override
         protected void onPreExecute() {
@@ -54,16 +54,16 @@ public class SubZoneList extends AppCompatActivity {
         }
 
         @Override
-        protected List<SubZone> doInBackground(String... params) {
+        protected List<RestaurantList> doInBackground(String... params) {
             try {
-                JSONArray subzones = subzoneList("subzones.json?city_id=" + params[7]);
-                List<SubZone> arrayOfSubZones = new ArrayList<SubZone>();
-                for (int i = 0; i < subzones.length(); i++){
-                    JSONObject subzone = subzones.getJSONObject(i);
-                    JSONObject localityDetail = subzone.getJSONObject(params[2]);
-                    arrayOfSubZones.add(new SubZone(localityDetail.getString(params[4]), localityDetail.getString(params[3]), localityDetail.getString(params[5]), localityDetail.getString(params[6])));
+                JSONArray restaurants = restaurantList("search.json?subzone_id=" + params[5]);
+                List<RestaurantList> arrayOfRestaurant = new ArrayList<RestaurantList>();
+                for (int i = 0; i < restaurants.length(); i++){
+                    JSONObject restaurant = restaurants.getJSONObject(i);
+                    JSONObject restaurantDetail = restaurant.getJSONObject(params[2]);
+                    arrayOfRestaurant.add(new RestaurantList(restaurantDetail.getString(params[4]), restaurantDetail.getString(params[3])));
                 }
-                return arrayOfSubZones;
+                return arrayOfRestaurant;
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -74,19 +74,20 @@ public class SubZoneList extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<SubZone> s) {
+        protected void onPostExecute(List<RestaurantList> s) {
 //            super.onPostExecute(s);
-            listView = (ListView)findViewById(R.id.locality);
-            SubZoneAdapter adapter = new SubZoneAdapter(getApplicationContext(), R.layout.row_layout);
+            listView = (ListView)findViewById(R.id.restaurantList);
+            RestaurantAdapter adapter = new RestaurantAdapter(getApplicationContext(), R.layout.row_layout);
             for(int i =0; i < s.size(); i++){
                 adapter.add(s.get(i));
             }
             progressBar.setVisibility(View.INVISIBLE);
             listView.setAdapter(adapter);
+//            setListAdapter(new ArrayAdapter<String>(Locality.this, android.R.layout.simple_list_item_1, s));
         }
     }
 
-    public JSONArray subzoneList(String query) throws IOException, JSONException {
+    public JSONArray restaurantList(String query) throws IOException, JSONException {
         OkHttpClient client = new OkHttpClient();
         StringBuilder url = new StringBuilder(URL);
         url.append(query);
@@ -97,28 +98,29 @@ public class SubZoneList extends AppCompatActivity {
         Response response = client.newCall(request).execute();
         String result = response.body().string();
         JSONObject localityObject = new JSONObject(result);
-        return localityObject.getJSONArray("subzones");
+        return localityObject.getJSONArray("results");
 
     }
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_sub_zone_list, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_restaurant_in_sub_zone, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

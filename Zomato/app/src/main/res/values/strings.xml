@@ -7,4 +7,6 @@
     <string name="title_activity_cuisine_list">CuisineList</string>
     <string name="title_activity_zone_list">ZoneList</string>
     <string name="title_activity_tab_listing">TabListing</string>
+    <string name="title_activity_restaurant_in_sub_zone">RestaurantInSubZone</string>
+    <string name="title_activity_restaurant_detail">RestaurantDetail</string>
 </resources>

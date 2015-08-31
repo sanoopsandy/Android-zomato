@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+
     <ProgressBar
         android:id="@+id/progressBar1"
         style="?android:attr/progressBarStyleLarge"
@@ -11,9 +12,10 @@
         android:layout_centerInParent="true"
         android:visibility="visible" />
     <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Loading Data"
-        android:id="@+id/locality"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/restaurantList"
+        android:textSize="25dp">
+    </ListView>
 
 </RelativeLayout>
