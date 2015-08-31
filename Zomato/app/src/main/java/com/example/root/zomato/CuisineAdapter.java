@@ -24,6 +24,7 @@ public class CuisineAdapter extends ArrayAdapter<Cuisine> {
 
     public CuisineAdapter(Context context, int resource) {
         super(context, resource);
+        this.context = context;
     }
 
     public void add(Cuisine object) {
@@ -54,7 +55,7 @@ public class CuisineAdapter extends ArrayAdapter<Cuisine> {
         final View.OnClickListener makeListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, RestaurantDetail.class);
+                Intent intent = new Intent(context, CuisineBasedRestaurant.class);
                 intent.putExtra(MESSAGE, cuisine.getId());
                 intent.putExtra(ID, cuisine.getCity_id());
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -22,6 +22,7 @@ public class RestaurantAdapter extends ArrayAdapter<RestaurantList> {
 
     public RestaurantAdapter(Context context, int resource) {
         super(context, resource);
+        this.context = context;
     }
 
     public void add(RestaurantList object) {
@@ -49,17 +50,17 @@ public class RestaurantAdapter extends ArrayAdapter<RestaurantList> {
         }
         final RestaurantList restaurant = (RestaurantList) getItem(position);
         holder.RestaurantName.setText(restaurant.getName());
-//        final View.OnClickListener makeListener = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context, RestaurantDetail.class);
-//                intent.putExtra(MESSAGE, restaurant.getId());
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intent);
-//            }
-//        };
-//
-//        row.setOnClickListener(makeListener);
+        final View.OnClickListener makeListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, RestaurantDetail.class);
+                intent.putExtra(MESSAGE, restaurant.getId());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        };
+
+        row.setOnClickListener(makeListener);
 
         return row;
     }
