@@ -20,14 +20,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SubZoneList"
-            android:label="@string/title_activity_sub_zone_list" >
-        </activity>
-        <activity
-            android:name=".CuisineList"
-            android:label="@string/title_activity_cuisine_list" >
-        </activity>
-        <activity
             android:name=".TabListing"
             android:label="@string/title_activity_tab_listing" >
         </activity>

@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +57,7 @@ public class CuisineBasedRestaurant extends AppCompatActivity {
         @Override
         protected List<RestaurantList> doInBackground(String... params) {
             try {
-                JSONArray restaurants = restaurantList("search.json?city_id=" + params[5] + "&cuisine_id=" + params[6]);
+                JSONArray restaurants = restaurantList("search.json?city_id=" + params[6] + "&cuisine_id=" + params[5]);
                 List<RestaurantList> arrayOfRestaurant = new ArrayList<RestaurantList>();
                 for (int i = 0; i < restaurants.length(); i++){
                     JSONObject restaurant = restaurants.getJSONObject(i);
@@ -73,7 +77,7 @@ public class CuisineBasedRestaurant extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<RestaurantList> s) {
 //            super.onPostExecute(s);
-            listView = (ListView)findViewById(R.id.restaurantList);
+            listView = (ListView)findViewById(R.id.cuisineRestaurantList);
             RestaurantAdapter adapter = new RestaurantAdapter(getApplicationContext(), R.layout.row_layout);
             for(int i =0; i < s.size(); i++){
                 adapter.add(s.get(i));
@@ -82,6 +86,21 @@ public class CuisineBasedRestaurant extends AppCompatActivity {
             listView.setAdapter(adapter);
 //            setListAdapter(new ArrayAdapter<String>(Locality.this, android.R.layout.simple_list_item_1, s));
         }
+    }
+
+    public JSONArray restaurantList(String query) throws IOException, JSONException {
+        OkHttpClient client = new OkHttpClient();
+        StringBuilder url = new StringBuilder(URL);
+        url.append(query);
+        Request request = new Request.Builder()
+                .url(String.valueOf(url))
+                .addHeader("X-Zomato-API-Key", apiKey)
+                .build();
+        Response response = client.newCall(request).execute();
+        String result = response.body().string();
+        JSONObject localityObject = new JSONObject(result);
+        return localityObject.getJSONArray("results");
+
     }
 
     @Override

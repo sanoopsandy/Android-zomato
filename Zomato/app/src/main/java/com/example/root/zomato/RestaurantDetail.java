@@ -36,9 +36,7 @@ public class RestaurantDetail extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_detail);
         Intent intent = getIntent();
         String rest_id = intent.getStringExtra(RestaurantAdapter.MESSAGE);
-        String cuisineRest_id = null;
-//        cuisineRest_id = intent.getStringExtra(RestaurantCuisineAdapter.MESSAGE);
-        new restaurantDetail().execute("1", "name", "address", "city", "phone", "timings", "avgCostForTwo", "cuisines", "reviewText", rest_id, cuisineRest_id);
+        new restaurantDetail().execute("1", "name", "address", "city", "phone", "timings", "avgCostForTwo", "cuisines", "reviewText", rest_id);
     }
 
     private class restaurantDetail extends AsyncTask<String, Void, String[]> {
@@ -58,40 +56,21 @@ public class RestaurantDetail extends AppCompatActivity {
         @Override
         protected String[] doInBackground(String... params) {
             try {
-                if (params[5] != null) {
-                    JSONObject restaurants = restDetail("restaurant.json/" + params[5]);
-                    String[] restaurantSpecs = new String[7];
-                    restaurantSpecs[0] = restaurants.getString(params[1]);
-                    JSONObject address = restaurants.getJSONObject("location");
-                    restaurantSpecs[1] = address.getString(params[2]);
-                    restaurantSpecs[2] = address.getString(params[3]);
-                    restaurantSpecs[3] = restaurants.getString(params[4]);
-                    restaurantSpecs[4] = restaurants.getString(params[5]);
-                    restaurantSpecs[5] = restaurants.getString(params[6]);
-                    restaurantSpecs[6] = restaurants.getString(params[7]);
-                    JSONObject review = restaurants.getJSONObject("userReviews");
-                    JSONObject editor = review.getJSONObject("0");
-                    JSONObject editoReview = editor.getJSONObject("review");
-                    restaurantSpecs[7] = editoReview.getString(params[8]);
-                    return restaurantSpecs;
-                } else {
-                    JSONObject restaurants = restDetail("restaurant.json/" + params[6]);
-                    String[] restaurantSpecs = new String[7];
-                    restaurantSpecs[0] = restaurants.getString(params[1]);
-                    JSONObject address = restaurants.getJSONObject("location");
-                    restaurantSpecs[1] = address.getString(params[2]);
-                    restaurantSpecs[2] = address.getString(params[3]);
-                    restaurantSpecs[3] = restaurants.getString(params[4]);
-                    restaurantSpecs[4] = restaurants.getString(params[5]);
-                    restaurantSpecs[5] = restaurants.getString(params[6]);
-                    restaurantSpecs[6] = restaurants.getString(params[7]);
-                    JSONObject review = restaurants.getJSONObject("userReviews");
-                    JSONObject editor = review.getJSONObject("0");
-                    JSONObject editoReview = editor.getJSONObject("review");
-                    restaurantSpecs[7] = editoReview.getString(params[8]);
-                    return restaurantSpecs;
-                }
-
+                JSONObject restaurants = restDetail("restaurant.json/" + params[9]);
+                String[] restaurantSpecs = new String[8];
+                restaurantSpecs[0] = restaurants.getString(params[1]);
+                JSONObject address = restaurants.getJSONObject("location");
+                restaurantSpecs[1] = address.getString(params[2]);
+                restaurantSpecs[2] = address.getString(params[3]);
+                restaurantSpecs[3] = restaurants.getString(params[4]);
+                restaurantSpecs[4] = restaurants.getString(params[5]);
+                restaurantSpecs[5] = restaurants.getString(params[6]);
+                restaurantSpecs[6] = restaurants.getString(params[7]);
+                JSONObject review = restaurants.getJSONObject("userReviews");
+                JSONObject editor = review.getJSONObject("0");
+                JSONObject editoReview = editor.getJSONObject("review");
+                restaurantSpecs[7] = editoReview.getString(params[8]);
+                return restaurantSpecs;
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -118,7 +97,7 @@ public class RestaurantDetail extends AppCompatActivity {
             avgCostForTwo.setText("Average Cost For Two : " + s[5]);
             cuisines.setText("Cuisines : " + s[6]);
             reviewText.setText("Review : " + s[7]);
-
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
