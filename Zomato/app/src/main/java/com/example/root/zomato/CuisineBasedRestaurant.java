@@ -62,7 +62,7 @@ public class CuisineBasedRestaurant extends AppCompatActivity {
                 for (int i = 0; i < restaurants.length(); i++){
                     JSONObject restaurant = restaurants.getJSONObject(i);
                     JSONObject restaurantDetail = restaurant.getJSONObject(params[2]);
-                    arrayOfRestaurant.add(new RestaurantList(restaurantDetail.getString(params[4]), restaurantDetail.getString(params[3])));
+                    arrayOfRestaurant.add(new RestaurantList(restaurantDetail.getString(params[4]), restaurantDetail.getString(params[3]), restaurantDetail.getString("rating_aggregate")));
                 }
                 return arrayOfRestaurant;
             } catch (IOException e) {

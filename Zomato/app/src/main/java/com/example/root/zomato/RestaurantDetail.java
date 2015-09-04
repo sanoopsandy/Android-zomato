@@ -1,9 +1,13 @@
 package com.example.root.zomato;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +25,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class RestaurantDetail extends AppCompatActivity {
 
     TextView name, address, city, phone, timings, avgCostForTwo, cuisines, reviewText;
     ImageView imageView;
-    private ProgressBar progressBar;
+    private ProgressBar progressBar, imageprogressbar;
     public final static String URL = "https://api.zomato.com/v1/";
     public final static String apiKey = "7749b19667964b87a3efc739e254ada2";
 
@@ -37,8 +43,55 @@ public class RestaurantDetail extends AppCompatActivity {
         Intent intent = getIntent();
         String rest_id = intent.getStringExtra(RestaurantAdapter.MESSAGE);
         new restaurantDetail().execute("1", "name", "address", "city", "phone", "timings", "avgCostForTwo", "cuisines", "reviewText", rest_id);
+        new downloadImageTask(imageView).execute(rest_id);
     }
 
+    private class downloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        protected void onPreExecute() {
+            imageprogressbar = (ProgressBar) findViewById(R.id.imageProgress);
+            imageprogressbar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        public downloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... params) {
+            try {
+                JSONObject restaurants = restDetail("restaurant.json/" + params[0]);
+                JSONObject image = restaurants.getJSONObject("photos");
+                JSONObject firstpic = image.getJSONObject("0");
+                JSONObject photo = firstpic.getJSONObject("photo");
+                String urldisplay = photo.getString("url");
+                Bitmap mIcon11 = null;
+                InputStream is = (InputStream) new URL(urldisplay).getContent();
+                mIcon11 = BitmapFactory.decodeStream(is);
+                return mIcon11;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                bmImage = (ImageView)findViewById(R.id.imageView);
+                bmImage.setImageBitmap(result);
+            }else {
+                imageView.setImageResource(R.drawable.placeholder);
+            }
+            imageprogressbar.setVisibility(View.INVISIBLE);
+        }
+    }
     private class restaurantDetail extends AsyncTask<String, Void, String[]> {
 
         @Override
@@ -55,9 +108,10 @@ public class RestaurantDetail extends AppCompatActivity {
 
         @Override
         protected String[] doInBackground(String... params) {
+            String urldisplay;
             try {
                 JSONObject restaurants = restDetail("restaurant.json/" + params[9]);
-                String[] restaurantSpecs = new String[8];
+                String[] restaurantSpecs = new String[10];
                 restaurantSpecs[0] = restaurants.getString(params[1]);
                 JSONObject address = restaurants.getJSONObject("location");
                 restaurantSpecs[1] = address.getString(params[2]);
@@ -67,9 +121,14 @@ public class RestaurantDetail extends AppCompatActivity {
                 restaurantSpecs[5] = restaurants.getString(params[6]);
                 restaurantSpecs[6] = restaurants.getString(params[7]);
                 JSONObject review = restaurants.getJSONObject("userReviews");
-                JSONObject editor = review.getJSONObject("0");
-                JSONObject editoReview = editor.getJSONObject("review");
-                restaurantSpecs[7] = editoReview.getString(params[8]);
+                if (review.length() != 2) {
+                    JSONObject editor = review.getJSONObject("0");
+                    JSONObject editoReview = editor.getJSONObject("review");
+                    restaurantSpecs[7] = editoReview.getString(params[8]);
+                }else{
+                    restaurantSpecs[7] = "No Review found";
+                }
+
                 return restaurantSpecs;
             } catch (IOException e) {
                 e.printStackTrace();

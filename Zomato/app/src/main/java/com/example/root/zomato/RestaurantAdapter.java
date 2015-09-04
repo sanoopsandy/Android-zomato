@@ -2,6 +2,7 @@ package com.example.root.zomato;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ public class RestaurantAdapter extends ArrayAdapter<RestaurantList> {
 
     static class Holder{
         TextView RestaurantName;
+        TextView Rating;
     }
 
     @Override
@@ -40,9 +42,12 @@ public class RestaurantAdapter extends ArrayAdapter<RestaurantList> {
         Holder holder;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.row_layout, parent, false);
+            row = inflater.inflate(R.layout.subzonerow_layout, parent, false);
             holder = new Holder();
             holder.RestaurantName = (TextView) row.findViewById(R.id.Name);
+            holder.Rating = (TextView) row.findViewById(R.id.rating);
+            holder.RestaurantName.setTextColor(Color.BLACK);
+            holder.Rating.setTextColor(Color.BLUE);
             row.setTag(holder);
         }
         else {
@@ -50,6 +55,7 @@ public class RestaurantAdapter extends ArrayAdapter<RestaurantList> {
         }
         final RestaurantList restaurant = (RestaurantList) getItem(position);
         holder.RestaurantName.setText(restaurant.getName());
+        holder.Rating.setText(restaurant.getRating());
         final View.OnClickListener makeListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {

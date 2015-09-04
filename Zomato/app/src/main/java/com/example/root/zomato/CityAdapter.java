@@ -3,6 +3,7 @@ package com.example.root.zomato;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class CityAdapter extends ArrayAdapter<City> {
             row = inflater.inflate(R.layout.row_layout, parent, false);
             holder = new Holder();
             holder.NAME = (TextView) row.findViewById(R.id.Name);
+            holder.NAME.setTextColor(Color.BLACK);
             row.setTag(holder);
         }
         else {
